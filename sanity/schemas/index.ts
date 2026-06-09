@@ -6,9 +6,10 @@ import { pengurus } from "./pengurus"
 import { fasilitas } from "./fasilitas"
 import { testimoni } from "./testimoni"
 import { event } from "./event"
-import { homepageSettings } from "./homepageSettings"
+import { siteSettings } from "./siteSettings"
 
 export const schemaTypes = [
+  siteSettings,
   artikel,
   kategori,
   galeri,
@@ -17,5 +18,4 @@ export const schemaTypes = [
   fasilitas,
   testimoni,
   event,
-  homepageSettings,
 ]

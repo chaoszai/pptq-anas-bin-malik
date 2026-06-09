@@ -3,7 +3,8 @@ import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { ArabesquePattern } from "@/components/ornaments/ArabesquePattern"
 import { CornerOrnament } from "@/components/ornaments/CornerOrnament"
 import { FadeIn } from "@/components/motion/FadeIn"
-import { PONDOK_INFO, BISMILLAH } from "@/lib/constants"
+import { PONDOK_INFO, BISMILLAH, SITE_NAME } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
 const HIGHLIGHTS = [
   {
@@ -23,7 +24,10 @@ const HIGHLIGHTS = [
   },
 ]
 
-export function AboutSection() {
+export function AboutSection({ settings }: { settings?: SiteSettings }) {
+  const tahunBerdiri = settings?.tahunBerdiri ?? PONDOK_INFO.tahunBerdiri
+  const tahunBerkiprah = new Date().getFullYear() - parseInt(tahunBerdiri)
+  const siteName = settings?.siteName ?? SITE_NAME
   return (
     <section className="py-24 px-6 overflow-hidden" style={{ background: "var(--color-cream)" }}>
       <div className="max-w-6xl mx-auto">
@@ -84,7 +88,7 @@ export function AboutSection() {
                   className="font-display font-semibold text-3xl leading-none"
                   style={{ color: "var(--color-gold-antique)" }}
                 >
-                  {PONDOK_INFO.tahunBerkiprah}+
+                  {tahunBerkiprah}+
                 </span>
                 <span
                   className="font-sans text-[10px] tracking-wider text-center leading-tight mt-1 px-2"
@@ -110,7 +114,7 @@ export function AboutSection() {
                   className="font-sans text-base leading-relaxed"
                   style={{ color: "var(--color-walnut)" }}
                 >
-                  PPTQ Anas Bin Malik berdiri sejak {PONDOK_INFO.tahunBerdiri} dengan tekad melahirkan
+                  {siteName} berdiri sejak {tahunBerdiri} dengan tekad melahirkan
                   generasi hafidz yang tidak hanya kuat hafalannya, tetapi juga kokoh ilmu agama
                   dan mulia akhlaknya. Bimbingan langsung dengan sanad bersambung kepada Rasulullah
                   ﷺ menjadi keunggulan metode talaqqi kami.

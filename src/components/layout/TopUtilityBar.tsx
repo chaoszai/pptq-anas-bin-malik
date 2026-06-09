@@ -1,7 +1,10 @@
 import { MapPin, Phone } from "lucide-react"
 import { BISMILLAH, CONTACT } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
-export function TopUtilityBar() {
+export function TopUtilityBar({ settings }: { settings?: SiteSettings }) {
+  const city = settings?.city ?? CONTACT.city
+  const phone = settings?.phone ?? CONTACT.phone
   return (
     <div
       className="w-full h-10 flex items-center"
@@ -20,23 +23,23 @@ export function TopUtilityBar() {
         {/* Contact info */}
         <div className="flex items-center gap-6 ml-auto">
           <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT.city)}`}
+            href={settings?.mapsUrl ?? `https://maps.google.com/?q=${encodeURIComponent(city)}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 text-sm transition-opacity hover:opacity-100"
             style={{ color: "rgba(253,252,248,0.75)" }}
           >
             <MapPin size={13} strokeWidth={1.5} />
-            <span className="hidden md:inline">{CONTACT.city}</span>
-            <span className="md:hidden">Klaten, Jateng</span>
+            <span className="hidden md:inline">{city}</span>
+            <span className="md:hidden">{city.split(",")[0]}</span>
           </a>
           <a
-            href={`tel:${CONTACT.phone}`}
+            href={`tel:${phone}`}
             className="flex items-center gap-1.5 text-sm transition-opacity hover:opacity-100"
             style={{ color: "rgba(253,252,248,0.75)" }}
           >
             <Phone size={13} strokeWidth={1.5} />
-            {CONTACT.phone}
+            {phone}
           </a>
         </div>
       </div>

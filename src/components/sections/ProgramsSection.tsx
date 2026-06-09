@@ -3,7 +3,14 @@ import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { PROGRAMS } from "@/lib/constants"
 
-export function ProgramsSection() {
+interface SanityProgram {
+  _id: string; title: string; arabicTitle?: string; roman?: string
+  slug: { current: string } | string; description?: string; order?: number
+}
+
+export function ProgramsSection({ programs }: { programs?: SanityProgram[] }) {
+  const items = programs ?? PROGRAMS.map((p) => ({ ...p, _id: String(p.id), slug: p.slug }))
+  const slugOf = (s: { current: string } | string) => typeof s === "string" ? s : s.current
   return (
     <section
       className="py-24 px-6"
@@ -38,10 +45,10 @@ export function ProgramsSection() {
 
         {/* Programs grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {PROGRAMS.map((program, i) => (
-            <FadeIn key={program.id} delay={i * 0.1}>
+          {items.map((program, i) => (
+            <FadeIn key={program._id} delay={i * 0.1}>
               <Link
-                href={`/kurikulum#${program.slug}`}
+                href={`/kurikulum#${slugOf(program.slug as { current: string } | string)}`}
                 className="group block h-full p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 style={{
                   background: "var(--color-cream)",
@@ -99,7 +106,7 @@ export function ProgramsSection() {
           ))}
 
           {/* CTA Card */}
-          <FadeIn delay={PROGRAMS.length * 0.1}>
+          <FadeIn delay={items.length * 0.1}>
             <Link
               href="/psb"
               className="group block h-full p-8 flex flex-col items-center justify-center text-center transition-all duration-300 hover:-translate-y-1"

@@ -28,7 +28,17 @@ const TESTIMONIALS = [
   },
 ]
 
-export function TestimonialsSection() {
+interface SanityTestimoni { _id: string; name: string; role?: string; quote: string; rating?: number }
+
+export function TestimonialsSection({ testimoni }: { testimoni?: SanityTestimoni[] }) {
+  const items = testimoni?.map((t) => ({
+    arabic: "جَزَاكُمُ اللَّهُ خَيْرًا",
+    quote: t.quote,
+    name: t.name,
+    from: t.role ?? "",
+    stars: t.rating ?? 5,
+    _id: t._id,
+  })) ?? TESTIMONIALS
   return (
     <section className="py-24 px-6" style={{ background: "var(--color-cream)" }}>
       <div className="max-w-6xl mx-auto">
@@ -52,8 +62,8 @@ export function TestimonialsSection() {
         </FadeIn>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {TESTIMONIALS.map((item, i) => (
-            <FadeIn key={i} delay={i * 0.12}>
+          {items.map((item, i) => (
+            <FadeIn key={String("_id" in item ? (item as { _id: string })._id : i)} delay={i * 0.12}>
               <div
                 className="relative p-8 h-full flex flex-col"
                 style={{

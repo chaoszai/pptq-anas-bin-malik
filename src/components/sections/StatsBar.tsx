@@ -4,9 +4,16 @@ import { useRef } from "react"
 import { useInView } from "framer-motion"
 import CountUp from "react-countup"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
-import { STATS } from "@/lib/constants"
+import { STATS, PONDOK_INFO } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
-export function StatsBar() {
+export function StatsBar({ settings }: { settings?: SiteSettings }) {
+  const stats = [
+    { value: settings?.totalSantri ?? PONDOK_INFO.totalSantri, label: "Santri Aktif", suffix: "+", arabicLabel: "طَالِب" },
+    { value: settings?.alumniHuffazh ?? PONDOK_INFO.alumniHuffazh, label: "Alumni Huffazh", suffix: "+", arabicLabel: "حَافِظ" },
+    { value: 30, label: "Target Hafalan", suffix: " Juz", arabicLabel: "جُزْء" },
+    { value: new Date().getFullYear() - parseInt(settings?.tahunBerdiri ?? "2015"), label: "Tahun Berkiprah", suffix: "+", arabicLabel: "سَنَة" },
+  ]
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
 
@@ -20,7 +27,7 @@ export function StatsBar() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-0 md:divide-x"
           style={{ "--tw-divide-opacity": "1", borderColor: "var(--color-sand)" } as React.CSSProperties}
         >
-          {STATS.map((stat, i) => (
+          {stats.map((stat, i) => (
             <div key={i} className="flex flex-col items-center text-center gap-1 md:px-8">
               <p
                 className="font-arabic text-base leading-none mb-1"

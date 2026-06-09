@@ -57,8 +57,16 @@ export const testimoniQuery = groq`
   }
 `
 
-export const homepageSettingsQuery = groq`
-  *[_type == "homepageSettings"][0] {
-    _id, heroHeading, heroSubheading, heroImage, ctaText
+export const siteSettingsQuery = groq`
+  *[_type == "siteSettings"][0] {
+    _id,
+    siteName, siteFullName, tagline, logo,
+    tahunBerdiri, pengasuh, skYayasan, npsn,
+    phone, whatsapp, email, address, city, mapsUrl,
+    instagram, youtube, facebook, tiktok,
+    totalSantri, alumniHuffazh, programCount,
+    heroHeading, heroSubheading, heroImage,
+    aboutText, aboutImage,
+    psbWaves
   }
 `

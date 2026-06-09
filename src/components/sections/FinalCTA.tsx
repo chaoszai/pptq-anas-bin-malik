@@ -2,9 +2,15 @@ import Link from "next/link"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { PSB_WAVES, CONTACT, BISMILLAH } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
-export function FinalCTA() {
-  const activeWave = PSB_WAVES[1]
+export function FinalCTA({ settings }: { settings?: SiteSettings }) {
+  const waves = settings?.psbWaves ?? [...PSB_WAVES]
+  const activeWave = waves[1] ?? waves[0] ?? PSB_WAVES[1]
+  const waNumber = settings?.whatsapp
+    ? `62${settings.whatsapp.replace(/^0/, "")}`
+    : "628123456789"
+  const waUrl = `https://wa.me/${waNumber}`
 
   return (
     <section
@@ -78,7 +84,7 @@ export function FinalCTA() {
               Daftar PSB Online
             </Link>
             <a
-              href={CONTACT.whatsappUrl}
+              href={waUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-10 py-4 font-sans text-sm font-medium tracking-wider transition-all duration-300 hover:bg-white/10"
@@ -99,7 +105,7 @@ export function FinalCTA() {
         <FadeIn delay={0.5}>
           <GeometricDivider color="rgba(201,169,97,0.2)" className="mb-8" />
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            {PSB_WAVES.map((wave) => (
+            {waves.map((wave) => (
               <div key={wave.id} className="text-center">
                 <p
                   className="font-sans font-semibold text-sm tracking-wider"

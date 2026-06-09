@@ -10,9 +10,18 @@ import {
   HADITS_HERO_TRANS,
   HADITS_HERO_RAWI,
   CONTACT,
+  SITE_NAME,
+  SITE_TAGLINE,
 } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
-export function HeroSection() {
+export function HeroSection({ settings }: { settings?: SiteSettings }) {
+  const siteName = settings?.siteName ?? SITE_NAME
+  const tagline = settings?.tagline ?? SITE_TAGLINE
+  const waNumber = settings?.whatsapp
+    ? `62${settings.whatsapp.replace(/^0/, "")}`
+    : "628123456789"
+  const waUrl = `https://wa.me/${waNumber}`
   return (
     <section
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
@@ -163,7 +172,7 @@ export function HeroSection() {
           className="mt-8 font-sans text-xs"
           style={{ color: "rgba(255,255,255,0.3)" }}
         >
-          📍 {CONTACT.city}
+          📍 {settings?.city ?? CONTACT.city}
         </motion.p>
       </div>
 

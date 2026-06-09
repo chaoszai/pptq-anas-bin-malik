@@ -4,14 +4,20 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, MessageCircle } from "lucide-react"
 import { CONTACT, SITE_NAME } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
-export function WhatsAppFloat() {
+export function WhatsAppFloat({ settings }: { settings?: SiteSettings }) {
   const [open, setOpen] = useState(false)
 
+  const siteName = settings?.siteName ?? SITE_NAME
+  const waNumber = settings?.whatsapp
+    ? `62${settings.whatsapp.replace(/^0/, "")}`
+    : "628123456789"
+  const waBase = `https://wa.me/${waNumber}`
   const message = encodeURIComponent(
-    `Assalamu'alaikum, saya ingin bertanya tentang ${SITE_NAME}.`
+    `Assalamu'alaikum, saya ingin bertanya tentang ${siteName}.`
   )
-  const waUrl = `${CONTACT.whatsappUrl}?text=${message}`
+  const waUrl = `${waBase}?text=${message}`
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
@@ -40,7 +46,7 @@ export function WhatsAppFloat() {
                 </div>
                 <div>
                   <p className="text-white text-xs font-semibold">WhatsApp</p>
-                  <p className="text-white/80 text-xs">{SITE_NAME}</p>
+                  <p className="text-white/80 text-xs">{siteName}</p>
                 </div>
               </div>
               <button

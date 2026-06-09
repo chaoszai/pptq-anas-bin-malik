@@ -8,6 +8,7 @@ import Image from "next/image"
 import { Menu, X, ChevronDown } from "lucide-react"
 import { NAV_ITEMS, SITE_NAME } from "@/lib/constants"
 import { cn } from "@/lib/utils"
+import type { SiteSettings } from "@/types/siteSettings"
 
 type NavItem = {
   label: string
@@ -113,7 +114,8 @@ function NavLink({ item, pathname }: { item: NavItem; pathname: string }) {
   )
 }
 
-export function Navbar() {
+export function Navbar({ settings }: { settings?: SiteSettings }) {
+  const siteName = settings?.siteName ?? SITE_NAME
   const pathname = usePathname()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -160,7 +162,7 @@ export function Navbar() {
                 className="font-sans font-semibold text-base"
                 style={{ color: "var(--color-ink)", letterSpacing: "0.01em" }}
               >
-                {SITE_NAME}
+                {siteName}
               </div>
               <div
                 className="font-sans text-sm"

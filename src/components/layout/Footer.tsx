@@ -11,6 +11,7 @@ import {
   PROGRAMS,
   BISMILLAH,
 } from "@/lib/constants"
+import type { SiteSettings } from "@/types/siteSettings"
 
 function SocialLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
   return (
@@ -27,7 +28,19 @@ function SocialLink({ href, label, children }: { href: string; label: string; ch
   )
 }
 
-export function Footer() {
+export function Footer({ settings }: { settings?: SiteSettings }) {
+  const siteName = settings?.siteName ?? SITE_NAME
+  const siteFullName = settings?.siteFullName ?? SITE_FULL_NAME
+  const contact = {
+    address: settings?.address ?? CONTACT.address,
+    phone: settings?.phone ?? CONTACT.phone,
+    email: settings?.email ?? CONTACT.email,
+  }
+  const social = {
+    instagram: settings?.instagram ?? SOCIAL.instagram,
+    youtube: settings?.youtube ?? SOCIAL.youtube,
+    facebook: settings?.facebook ?? SOCIAL.facebook,
+  }
   return (
     <footer
       className="relative overflow-hidden"
@@ -53,7 +66,7 @@ export function Footer() {
                   className="font-sans font-semibold text-sm"
                   style={{ color: "var(--color-cream)" }}
                 >
-                  {SITE_NAME}
+                  {siteName}
                 </div>
                 <div
                   className="font-sans text-xs"
@@ -67,11 +80,11 @@ export function Footer() {
               className="font-sans text-xs leading-relaxed mb-5"
               style={{ color: "rgba(253,252,248,0.6)" }}
             >
-              {SITE_FULL_NAME} — Mencetak generasi huffazh berakhlakul karimah di Klaten, Jawa Tengah.
+              {siteFullName} — Mencetak generasi huffazh berakhlakul karimah di Klaten, Jawa Tengah.
             </p>
             <div className="flex items-center gap-3">
-              {SOCIAL.instagram && (
-                <SocialLink href={SOCIAL.instagram} label="Instagram">
+              {social.instagram && (
+                <SocialLink href={social.instagram} label="Instagram">
                   {/* Instagram icon */}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -80,8 +93,8 @@ export function Footer() {
                   </svg>
                 </SocialLink>
               )}
-              {SOCIAL.youtube && (
-                <SocialLink href={SOCIAL.youtube} label="YouTube">
+              {social.youtube && (
+                <SocialLink href={social.youtube} label="YouTube">
                   {/* YouTube icon */}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                     <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/>
@@ -166,7 +179,7 @@ export function Footer() {
                   className="font-sans text-xs leading-relaxed"
                   style={{ color: "rgba(253,252,248,0.55)" }}
                 >
-                  {CONTACT.address}
+                  {contact.address}
                 </span>
               </li>
               <li className="flex gap-3 items-center">
@@ -176,11 +189,11 @@ export function Footer() {
                   style={{ color: "var(--color-gold-antique)", opacity: 0.7 }}
                 />
                 <a
-                  href={`tel:${CONTACT.phone}`}
+                  href={`tel:${contact.phone}`}
                   className="font-sans text-xs transition-colors hover:text-[var(--color-cream)]"
                   style={{ color: "rgba(253,252,248,0.55)" }}
                 >
-                  {CONTACT.phone}
+                  {contact.phone}
                 </a>
               </li>
               <li className="flex gap-3 items-center">
@@ -190,11 +203,11 @@ export function Footer() {
                   style={{ color: "var(--color-gold-antique)", opacity: 0.7 }}
                 />
                 <a
-                  href={`mailto:${CONTACT.email}`}
+                  href={`mailto:${contact.email}`}
                   className="font-sans text-xs transition-colors hover:text-[var(--color-cream)]"
                   style={{ color: "rgba(253,252,248,0.55)" }}
                 >
-                  {CONTACT.email}
+                  {contact.email}
                 </a>
               </li>
             </ul>
@@ -210,7 +223,7 @@ export function Footer() {
             className="font-sans text-xs"
             style={{ color: "rgba(253,252,248,0.35)", letterSpacing: "0.04em" }}
           >
-            © {new Date().getFullYear()} {SITE_FULL_NAME}. Hak cipta dilindungi.
+            © {new Date().getFullYear()} {siteFullName}. Hak cipta dilindungi.
           </p>
           <p
             className="font-arabic text-base"
