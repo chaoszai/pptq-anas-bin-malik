@@ -55,11 +55,11 @@ export function Footer({ settings }: { settings?: SiteSettings }) {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-5">
               <Image
-                src="/logo-pptq.jpeg"
+                src={settings?.logo || "/logo-pptq.jpeg"}
                 alt="Logo PPTQ Anas Bin Malik"
                 width={44}
                 height={44}
-                className="rounded-full object-cover"
+                className="rounded-full object-cover w-11 h-11"
               />
               <div className="leading-tight">
                 <div

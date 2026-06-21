@@ -150,13 +150,15 @@ export function Navbar({ settings }: { settings?: SiteSettings }) {
 
           {/* Logo + Name */}
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            <Image
-              src="/logo-pptq.jpeg"
-              alt="Logo PPTQ Anas Bin Malik"
-              width={48}
-              height={48}
-              className="rounded-full object-cover"
-            />
+            <span data-cms-field="logo" className="inline-flex">
+              <Image
+                src={settings?.logo || "/logo-pptq.jpeg"}
+                alt="Logo PPTQ Anas Bin Malik"
+                width={48}
+                height={48}
+                className="rounded-full object-cover w-12 h-12"
+              />
+            </span>
             <div className="leading-tight">
               <div
                 data-cms-field="siteName"

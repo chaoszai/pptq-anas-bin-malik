@@ -29,6 +29,18 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{ background: "var(--color-emerald-deeper, var(--color-emerald-darker))" }}
     >
+      {/* Hero background image (opsional) */}
+      <div
+        data-cms-field="heroImage"
+        className="absolute inset-0"
+        style={{
+          backgroundImage: settings?.heroImage ? `url(${settings.heroImage})` : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          opacity: settings?.heroImage ? 0.28 : 0,
+        }}
+      />
+
       {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -68,13 +80,14 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, delay: 0.5, ease: [0.25, 0.4, 0.25, 1] }}
           className="mb-8"
+          data-cms-field="logo"
         >
           <Image
-            src="/logo-pptq.jpeg"
+            src={settings?.logo || "/logo-pptq.jpeg"}
             alt="Logo PPTQ Anas Bin Malik"
             width={100}
             height={100}
-            className="rounded-full object-cover ring-2 ring-gold-antique"
+            className="rounded-full object-cover ring-2 ring-gold-antique w-[100px] h-[100px]"
             style={{ boxShadow: "0 0 0 2px var(--color-gold-antique), 0 8px 32px rgba(0,0,0,0.3)" }}
             priority
           />

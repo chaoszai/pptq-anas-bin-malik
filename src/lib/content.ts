@@ -69,6 +69,12 @@ export async function getPageContent<T = Record<string, any>>(
   }
 }
 
+// ============ Text Overrides (editor visual) ============
+export async function getTextOverrides(): Promise<Record<string, string>> {
+  const data = await getPageContent<Record<string, string>>("text-overrides")
+  return data ?? {}
+}
+
 // ============ Kategori ============
 function mapKategori(r: any): Kategori {
   return { id: r.id, title: r.title, slug: r.slug, color: r.color ?? undefined }

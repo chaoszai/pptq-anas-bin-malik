@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import type { SiteSettings, PsbWave } from "@/types/siteSettings"
-import { saveSiteSettings } from "@/app/actions/content"
+import { saveSiteSettings, saveTextOverrides } from "@/app/actions/content"
 import { Input, Textarea, Btn } from "@/components/admin/ui"
 import { ImageUpload } from "@/components/admin/ImageUpload"
 import { CMS_FIELDS } from "@/lib/cmsFields"
@@ -24,10 +24,17 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   )
 }
 
-export function KontenForm({ initial }: { initial: SiteSettings }) {
+export function KontenForm({
+  initial,
+  initialOverrides = {},
+}: {
+  initial: SiteSettings
+  initialOverrides?: Record<string, string>
+}) {
   const router = useRouter()
   const [s, setS] = useState<SiteSettings>(initial)
   const [waves, setWaves] = useState<PsbWave[]>(initial.psbWaves ?? [])
+  const [overrides, setOverrides] = useState<Record<string, string>>(initialOverrides)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [previewPage, setPreviewPage] = useState("/")
@@ -58,6 +65,10 @@ export function KontenForm({ initial }: { initial: SiteSettings }) {
         setSelected(d.field)
         setShowFull(false)
       }
+      if (d.type === "text-edit" && d.path) {
+        setOverrides((prev) => ({ ...prev, [d.path]: d.value }))
+        setSaved(false)
+      }
     }
     window.addEventListener("message", onMessage)
     return () => window.removeEventListener("message", onMessage)
@@ -79,7 +90,10 @@ export function KontenForm({ initial }: { initial: SiteSettings }) {
     setSaving(true)
     setSaved(false)
     try {
-      await saveSiteSettings({ ...s, psbWaves: waves })
+      await Promise.all([
+        saveSiteSettings({ ...s, psbWaves: waves }),
+        saveTextOverrides(overrides),
+      ])
       setSaved(true)
       router.refresh()
       reloadPreview()
@@ -141,7 +155,7 @@ export function KontenForm({ initial }: { initial: SiteSettings }) {
         {/* Hint awal */}
         {!selected && !showFull && (
           <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-emerald-700 text-white text-sm px-4 py-2 rounded-full shadow-lg pointer-events-none">
-            👆 Klik teks atau gambar di halaman untuk mengubahnya
+            👆 Klik teks apa saja untuk langsung mengetik · klik gambar/angka untuk ganti
           </div>
         )}
 

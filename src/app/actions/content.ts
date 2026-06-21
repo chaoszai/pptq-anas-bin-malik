@@ -41,6 +41,17 @@ export async function saveSiteSettings(data: Record<string, unknown>) {
   revalidateAll()
 }
 
+// ============ Text Overrides (editor visual) ============
+export async function saveTextOverrides(overrides: Record<string, string>) {
+  await requireAdmin()
+  await pool.query(
+    `INSERT INTO page_content (key, data, updated_at) VALUES ('text-overrides', $1, now())
+     ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data, updated_at = now()`,
+    [JSON.stringify(overrides)]
+  )
+  revalidateAll()
+}
+
 // ============ Page Content ============
 export async function savePageContent(key: string, data: Record<string, unknown>) {
   await requireAdmin()

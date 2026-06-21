@@ -4,14 +4,18 @@ import { Footer } from "@/components/layout/Footer"
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat"
 import { SmoothScroll } from "@/components/layout/SmoothScroll"
 import { CmsEditBridge } from "@/components/cms/CmsEditBridge"
-import { getSiteSettings } from "@/lib/content"
+import { TextOverridesApplier } from "@/components/cms/TextOverridesApplier"
+import { getSiteSettings, getTextOverrides } from "@/lib/content"
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const settings = await getSiteSettings()
+  const [settings, textOverrides] = await Promise.all([
+    getSiteSettings(),
+    getTextOverrides(),
+  ])
 
   return (
     <SmoothScroll>
@@ -22,6 +26,7 @@ export default async function MainLayout({
         <Footer settings={settings} />
         <WhatsAppFloat settings={settings} />
       </div>
+      <TextOverridesApplier overrides={textOverrides} />
       <CmsEditBridge />
     </SmoothScroll>
   )
