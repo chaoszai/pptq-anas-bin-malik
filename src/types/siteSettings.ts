@@ -1,9 +1,14 @@
+export interface PsbWave {
+  id: string
+  label: string
+  period: string
+}
+
 export interface SiteSettings {
-  _id?: string
   siteName?: string
   siteFullName?: string
   tagline?: string
-  logo?: { asset?: { url?: string } }
+  logo?: string
   tahunBerdiri?: string
   pengasuh?: string
   skYayasan?: string
@@ -23,8 +28,8 @@ export interface SiteSettings {
   programCount?: number
   heroHeading?: string
   heroSubheading?: string
-  heroImage?: { asset?: { url?: string } }
+  heroImage?: string
   aboutText?: string
-  aboutImage?: { asset?: { url?: string } }
-  psbWaves?: Array<{ id: string; label: string; period: string }>
+  aboutImage?: string
+  psbWaves?: PsbWave[]
 }

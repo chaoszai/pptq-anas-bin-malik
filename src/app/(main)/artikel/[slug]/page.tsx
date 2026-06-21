@@ -1,47 +1,20 @@
 import Link from "next/link"
-import Image from "next/image"
-import { notFound } from "next/navigation"
-import { PortableText } from "@portabletext/react"
 import { PageHero } from "@/components/ui/PageHero"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
-import { sanityClient } from "@/lib/sanity/client"
-import { artikelBySlugQuery } from "@/lib/sanity/queries"
-import { urlFor } from "@/lib/sanity/image"
+import { getArtikelBySlug } from "@/lib/content"
 
-export const revalidate = 60
-
-interface ArtikelDetail {
-  _id: string
-  title: string
-  slug: { current: string }
-  excerpt?: string
-  body?: unknown[]
-  thumbnail?: { asset: { _ref: string } }
-  publishedAt?: string
-  kategori?: { title: string }
-  seo?: { title?: string; description?: string }
-}
+export const dynamic = "force-dynamic"
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  try {
-    const { slug } = await params
-    const artikel: ArtikelDetail = await sanityClient.fetch(artikelBySlugQuery, { slug })
-    return { title: artikel?.seo?.title ?? artikel?.title ?? "Artikel — PPTQ Anas Bin Malik" }
-  } catch {
-    return { title: "Artikel — PPTQ Anas Bin Malik" }
-  }
+  const { slug } = await params
+  const artikel = await getArtikelBySlug(slug)
+  return { title: artikel?.seo?.title ?? artikel?.title ?? "Artikel — PPTQ Anas Bin Malik" }
 }
 
 export default async function ArtikelDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-  let artikel: ArtikelDetail | null = null
-
-  try {
-    artikel = await sanityClient.fetch(artikelBySlugQuery, { slug })
-  } catch {
-    // Sanity not configured yet
-  }
+  const artikel = await getArtikelBySlug(slug)
 
   if (!artikel) {
     return (
@@ -49,7 +22,7 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
         <PageHero arabicTitle="الْمَقَالَة" title="Artikel" breadcrumbs={[{ label: "Beranda" }, { label: "Artikel", href: "/artikel" }, { label: "Detail" }]} />
         <div className="py-24 px-6 text-center" style={{ background: "var(--color-cream)" }}>
           <p className="font-sans text-sm mb-4" style={{ color: "var(--color-walnut)" }}>
-            Artikel belum tersedia atau Sanity belum terhubung.
+            Artikel tidak ditemukan.
           </p>
           <Link href="/artikel" className="font-sans text-sm underline" style={{ color: "var(--color-emerald-deep)" }}>
             ← Kembali ke Artikel
@@ -73,7 +46,6 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
       <div className="py-16 px-6" style={{ background: "var(--color-cream)" }}>
         <div className="max-w-3xl mx-auto">
           <FadeIn>
-            {/* Meta */}
             <div className="flex items-center gap-3 mb-8">
               {artikel.kategori && (
                 <span
@@ -90,27 +62,19 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
               )}
             </div>
 
-            {/* Cover */}
-            {artikel.thumbnail && (
+            {artikel.thumbnailUrl && (
               <div className="w-full aspect-video overflow-hidden mb-10">
-                <Image
-                  src={urlFor(artikel.thumbnail).width(900).height(506).url()}
-                  alt={artikel.title}
-                  width={900}
-                  height={506}
-                  className="w-full h-full object-cover"
-                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={artikel.thumbnailUrl} alt={artikel.title} className="w-full h-full object-cover" />
               </div>
             )}
 
-            {/* Body */}
-            {artikel.body ? (
+            {artikel.bodyHtml ? (
               <div
-                className="font-sans text-base leading-relaxed space-y-5"
+                className="prose prose-emerald max-w-none font-sans text-base leading-relaxed"
                 style={{ color: "var(--color-walnut)" }}
-              >
-                <PortableText value={artikel.body as Parameters<typeof PortableText>[0]["value"]} />
-              </div>
+                dangerouslySetInnerHTML={{ __html: artikel.bodyHtml }}
+              />
             ) : (
               artikel.excerpt && (
                 <p className="font-sans text-base leading-relaxed" style={{ color: "var(--color-walnut)" }}>
@@ -119,7 +83,6 @@ export default async function ArtikelDetailPage({ params }: { params: Promise<{ 
               )
             )}
 
-            {/* Back */}
             <div className="mt-12 pt-8" style={{ borderTop: "0.5px solid var(--color-sand)" }}>
               <GeometricDivider className="mb-8" />
               <Link

@@ -1,46 +1,32 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { FadeIn } from "@/components/motion/FadeIn"
-
-interface GaleriImage {
-  _key: string
-  caption?: string
-  alt?: string
-  asset: { _id: string; url: string; metadata: { dimensions: { width: number; height: number } } }
-}
-
-interface GaleriAlbum {
-  _id: string
-  title: string
-  kategori: string
-  date?: string
-  images: GaleriImage[]
-}
+import type { GaleriAlbum, GaleriImage } from "@/types/content"
 
 interface Props {
   albums: GaleriAlbum[]
 }
 
 const SEMUA = "Semua"
-const KATEGORI = [SEMUA, "Kegiatan Tahfidz", "Fasilitas", "Wisuda Huffazh", "Kegiatan Harian", "Alam Pondok"]
+
+type FlatImage = GaleriImage & { albumTitle: string; albumKategori?: string }
 
 export function GaleriGrid({ albums }: Props) {
   const [aktif, setAktif] = useState(SEMUA)
-  const [lightbox, setLightbox] = useState<GaleriImage | null>(null)
+  const [lightbox, setLightbox] = useState<FlatImage | null>(null)
 
+  const kategoriList = [SEMUA, ...Array.from(new Set(albums.map((a) => a.kategori).filter(Boolean) as string[]))]
   const filteredAlbums = aktif === SEMUA ? albums : albums.filter((a) => a.kategori === aktif)
-  const allImages = filteredAlbums.flatMap((album) =>
+  const allImages: FlatImage[] = filteredAlbums.flatMap((album) =>
     (album.images ?? []).map((img) => ({ ...img, albumTitle: album.title, albumKategori: album.kategori }))
   )
 
   return (
     <>
-      {/* Filter */}
       <FadeIn>
         <div className="flex flex-wrap gap-2 mb-10">
-          {KATEGORI.map((kat) => (
+          {kategoriList.map((kat) => (
             <button
               key={kat}
               onClick={() => setAktif(kat)}
@@ -57,7 +43,6 @@ export function GaleriGrid({ albums }: Props) {
         </div>
       </FadeIn>
 
-      {/* Grid */}
       {allImages.length === 0 ? (
         <FadeIn>
           <div
@@ -75,18 +60,17 @@ export function GaleriGrid({ albums }: Props) {
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
           {allImages.map((img, i) => (
-            <FadeIn key={img._key} delay={i * 0.03}>
+            <FadeIn key={img.id} delay={i * 0.03}>
               <div
                 className="group relative aspect-square overflow-hidden cursor-pointer"
                 style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
                 onClick={() => setLightbox(img)}
               >
-                <Image
-                  src={img.asset.url}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={img.url}
                   alt={img.alt ?? img.caption ?? img.albumTitle}
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div
                   className="absolute inset-0 flex items-end opacity-0 group-hover:opacity-100 transition-all duration-300"
@@ -96,9 +80,11 @@ export function GaleriGrid({ albums }: Props) {
                     <p className="font-sans text-xs font-medium leading-snug" style={{ color: "var(--color-cream)" }}>
                       {img.caption ?? img.albumTitle}
                     </p>
-                    <p className="font-sans text-[10px] mt-0.5" style={{ color: "var(--color-gold-antique)" }}>
-                      {img.albumKategori}
-                    </p>
+                    {img.albumKategori && (
+                      <p className="font-sans text-[10px] mt-0.5" style={{ color: "var(--color-gold-antique)" }}>
+                        {img.albumKategori}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -107,7 +93,6 @@ export function GaleriGrid({ albums }: Props) {
         </div>
       )}
 
-      {/* Lightbox */}
       {lightbox && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -122,15 +107,12 @@ export function GaleriGrid({ albums }: Props) {
             >
               ✕ Tutup
             </button>
-            <div className="relative w-full max-h-[80vh]">
-              <Image
-                src={lightbox.asset.url}
-                alt={lightbox.alt ?? lightbox.caption ?? ""}
-                width={lightbox.asset.metadata.dimensions.width}
-                height={lightbox.asset.metadata.dimensions.height}
-                className="w-full h-full object-contain max-h-[80vh]"
-              />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={lightbox.url}
+              alt={lightbox.alt ?? lightbox.caption ?? ""}
+              className="w-full h-full object-contain max-h-[80vh]"
+            />
             {lightbox.caption && (
               <p className="font-sans text-sm text-center" style={{ color: "rgba(255,255,255,0.7)" }}>
                 {lightbox.caption}

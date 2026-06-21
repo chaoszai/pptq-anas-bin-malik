@@ -6,6 +6,16 @@ import { logoutAdmin } from "@/app/actions/admin"
 
 const navItems = [
   { href: "/admin/pendaftar", label: "Pendaftar", icon: "👥" },
+  { href: "/admin/konten", label: "Konten Web", icon: "⚙️" },
+  { href: "/admin/halaman", label: "Halaman Statis", icon: "📄" },
+  { href: "/admin/artikel", label: "Artikel", icon: "📝" },
+  { href: "/admin/kategori", label: "Kategori", icon: "🏷️" },
+  { href: "/admin/galeri", label: "Galeri", icon: "🖼️" },
+  { href: "/admin/program", label: "Program", icon: "📚" },
+  { href: "/admin/pengurus", label: "Pengurus", icon: "👤" },
+  { href: "/admin/fasilitas", label: "Fasilitas", icon: "🏛️" },
+  { href: "/admin/testimoni", label: "Testimoni", icon: "💬" },
+  { href: "/admin/event", label: "Event", icon: "📅" },
 ]
 
 export default function AdminSidebar() {

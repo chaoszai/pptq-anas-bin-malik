@@ -6,27 +6,37 @@ import { GalleryPreview } from "@/components/sections/GalleryPreview"
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection"
 import { LatestArticles } from "@/components/sections/LatestArticles"
 import { FinalCTA } from "@/components/sections/FinalCTA"
-import { sanityClient } from "@/lib/sanity/client"
-import { programQuery, testimoniQuery, siteSettingsQuery } from "@/lib/sanity/queries"
-import type { SiteSettings } from "@/types/siteSettings"
+import {
+  getSiteSettings,
+  getProgramList,
+  getTestimoniList,
+  getGaleriAlbums,
+  getLatestArtikel,
+} from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 
 export default async function Home() {
-  const [settings, programs, testimoni] = await Promise.all([
-    sanityClient.fetch(siteSettingsQuery).catch(() => null) as Promise<SiteSettings | null>,
-    sanityClient.fetch(programQuery).catch(() => []),
-    sanityClient.fetch(testimoniQuery).catch(() => []),
+  const [settings, programs, testimoni, albums, articles] = await Promise.all([
+    getSiteSettings(),
+    getProgramList(),
+    getTestimoniList(),
+    getGaleriAlbums(),
+    getLatestArtikel(3),
   ])
+
+  const galleryImages = albums.flatMap((a) => a.images.map((img) => ({ url: img.url, label: img.caption ?? a.title })))
 
   return (
     <>
-      <HeroSection settings={settings ?? undefined} />
-      <StatsBar settings={settings ?? undefined} />
-      <AboutSection settings={settings ?? undefined} />
+      <HeroSection settings={settings} />
+      <StatsBar settings={settings} />
+      <AboutSection settings={settings} />
       <ProgramsSection programs={programs.length > 0 ? programs : undefined} />
-      <GalleryPreview />
+      <GalleryPreview images={galleryImages.length > 0 ? galleryImages.slice(0, 6) : undefined} />
       <TestimonialsSection testimoni={testimoni.length > 0 ? testimoni : undefined} />
-      <LatestArticles />
-      <FinalCTA settings={settings ?? undefined} />
+      <LatestArticles articles={articles.length > 0 ? articles : undefined} />
+      <FinalCTA settings={settings} />
     </>
   )
 }

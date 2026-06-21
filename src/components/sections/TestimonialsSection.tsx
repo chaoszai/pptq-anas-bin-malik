@@ -28,16 +28,16 @@ const TESTIMONIALS = [
   },
 ]
 
-interface SanityTestimoni { _id: string; name: string; role?: string; quote: string; rating?: number }
+import type { Testimoni } from "@/types/content"
 
-export function TestimonialsSection({ testimoni }: { testimoni?: SanityTestimoni[] }) {
+export function TestimonialsSection({ testimoni }: { testimoni?: Testimoni[] }) {
   const items = testimoni?.map((t) => ({
     arabic: "جَزَاكُمُ اللَّهُ خَيْرًا",
     quote: t.quote,
     name: t.name,
     from: t.role ?? "",
     stars: t.rating ?? 5,
-    _id: t._id,
+    _id: t.id,
   })) ?? TESTIMONIALS
   return (
     <section className="py-24 px-6" style={{ background: "var(--color-cream)" }}>

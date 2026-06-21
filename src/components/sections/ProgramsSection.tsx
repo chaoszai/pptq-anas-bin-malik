@@ -2,15 +2,19 @@ import Link from "next/link"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { PROGRAMS } from "@/lib/constants"
+import type { Program } from "@/types/content"
 
-interface SanityProgram {
-  _id: string; title: string; arabicTitle?: string; roman?: string
-  slug: { current: string } | string; description?: string; order?: number
-}
-
-export function ProgramsSection({ programs }: { programs?: SanityProgram[] }) {
-  const items = programs ?? PROGRAMS.map((p) => ({ ...p, _id: String(p.id), slug: p.slug }))
-  const slugOf = (s: { current: string } | string) => typeof s === "string" ? s : s.current
+export function ProgramsSection({ programs }: { programs?: Program[] }) {
+  const items: Program[] = programs ?? PROGRAMS.map((p) => ({
+    id: String(p.id),
+    title: p.title,
+    arabicTitle: p.arabicTitle,
+    roman: p.roman,
+    slug: p.slug,
+    description: p.description,
+    order: p.id,
+  }))
+  const slugOf = (s?: string) => s ?? ""
   return (
     <section
       className="py-24 px-6"
@@ -46,9 +50,9 @@ export function ProgramsSection({ programs }: { programs?: SanityProgram[] }) {
         {/* Programs grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((program, i) => (
-            <FadeIn key={program._id} delay={i * 0.1}>
+            <FadeIn key={program.id} delay={i * 0.1}>
               <Link
-                href={`/kurikulum#${slugOf(program.slug as { current: string } | string)}`}
+                href={`/kurikulum#${slugOf(program.slug)}`}
                 className="group block h-full p-8 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
                 style={{
                   background: "var(--color-cream)",

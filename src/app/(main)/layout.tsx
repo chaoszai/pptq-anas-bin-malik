@@ -3,18 +3,14 @@ import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat"
 import { SmoothScroll } from "@/components/layout/SmoothScroll"
-import { sanityClient } from "@/lib/sanity/client"
-import { siteSettingsQuery } from "@/lib/sanity/queries"
-import type { SiteSettings } from "@/types/siteSettings"
+import { getSiteSettings } from "@/lib/content"
 
 export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const settings: SiteSettings = await sanityClient
-    .fetch(siteSettingsQuery)
-    .catch(() => ({}))
+  const settings = await getSiteSettings()
 
   return (
     <SmoothScroll>

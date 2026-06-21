@@ -1,106 +1,98 @@
-export interface SanityImage {
-  _type: "image"
-  asset: {
-    _ref: string
-    _type: "reference"
-  }
-  alt?: string
-  caption?: string
-}
-
 export interface SeoFields {
-  metaTitle?: string
-  metaDescription?: string
-  ogImage?: SanityImage
-}
-
-export interface Artikel {
-  _id: string
-  _createdAt: string
-  title: string
-  slug: { current: string }
-  excerpt?: string
-  body: unknown[]
-  thumbnail?: SanityImage
-  kategori?: Kategori
-  publishedAt: string
-  featured?: boolean
-  seo?: SeoFields
+  title?: string
+  description?: string
+  ogImage?: string
 }
 
 export interface Kategori {
-  _id: string
+  id: string
   title: string
-  slug: { current: string }
+  slug: string
   color?: string
 }
 
-export interface Event {
-  _id: string
+export interface Artikel {
+  id: string
   title: string
-  slug: { current: string }
-  description?: string
-  body?: unknown[]
-  thumbnail?: SanityImage
-  startDate: string
-  endDate?: string
-  location?: string
-  isOnline?: boolean
-  registrationUrl?: string
+  slug: string
+  excerpt?: string
+  bodyHtml?: string
+  thumbnailUrl?: string
+  kategoriId?: string | null
+  kategori?: Kategori | null
+  publishedAt?: string | null
+  featured: boolean
   seo?: SeoFields
+  createdAt: string
 }
 
-export interface GaleriItem {
-  _id: string
+export interface GaleriImage {
+  id: string
+  galeriId: string
+  url: string
+  caption?: string
+  alt?: string
+  order: number
+}
+
+export interface GaleriAlbum {
+  id: string
   title: string
-  slug: { current: string }
-  images: SanityImage[]
+  slug?: string
   kategori?: string
-  date?: string
+  date?: string | null
+  images: GaleriImage[]
 }
 
 export interface Program {
-  _id: string
+  id: string
   title: string
   arabicTitle?: string
   roman?: string
-  slug: { current: string }
-  description: string
-  body?: unknown[]
-  icon?: SanityImage
-  order?: number
+  slug?: string
+  description?: string
+  bodyHtml?: string
+  iconUrl?: string
+  order: number
 }
 
 export interface Pengurus {
-  _id: string
+  id: string
   name: string
   jabatan: string
-  photo?: SanityImage
-  order?: number
+  photoUrl?: string
+  order: number
 }
 
 export interface Fasilitas {
-  _id: string
+  id: string
   title: string
   description?: string
   icon?: string
-  photos?: SanityImage[]
-  order?: number
+  photos: string[]
+  order: number
 }
 
 export interface Testimoni {
-  _id: string
+  id: string
   name: string
   role?: string
-  photo?: SanityImage
+  photoUrl?: string
   quote: string
-  rating?: number
+  rating: number
+  order: number
 }
 
-export interface HomepageSettings {
-  _id: string
-  heroHeading?: string
-  heroSubheading?: string
-  heroImage?: SanityImage
-  ctaText?: string
+export interface EventItem {
+  id: string
+  title: string
+  slug?: string
+  description?: string
+  thumbnailUrl?: string
+  startDate?: string | null
+  endDate?: string | null
+  location?: string
+  isOnline: boolean
+  registrationUrl?: string
+  createdAt: string
 }

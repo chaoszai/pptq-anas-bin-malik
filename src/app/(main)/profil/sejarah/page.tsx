@@ -1,6 +1,10 @@
 import { PageHero } from "@/components/ui/PageHero"
 import { ProfilSidebar } from "@/components/ui/ProfilSidebar"
 import { FadeIn } from "@/components/motion/FadeIn"
+import { getPageContent } from "@/lib/content"
+import { OverridePage } from "@/components/ui/OverridePage"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Sejarah — PPTQ Anas Bin Malik",
@@ -39,7 +43,20 @@ const TIMELINE = [
   },
 ]
 
-export default function SejarahPage() {
+export default async function SejarahPage() {
+  const override = await getPageContent<{ html?: string }>("sejarah")
+  if (override?.html) {
+    return (
+      <OverridePage
+        arabicTitle="تَارِيخُ الْمَعْهَد"
+        title="Sejarah Pondok"
+        subtitle="Perjalanan panjang PPTQ Anas Bin Malik."
+        breadcrumbs={[{ label: "Beranda" }, { label: "Profil" }, { label: "Sejarah" }]}
+        html={override.html}
+        withSidebar
+      />
+    )
+  }
   return (
     <>
       <PageHero

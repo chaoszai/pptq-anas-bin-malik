@@ -2,6 +2,10 @@ import { PageHero } from "@/components/ui/PageHero"
 import { ProfilSidebar } from "@/components/ui/ProfilSidebar"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
+import { getPageContent } from "@/lib/content"
+import { OverridePage } from "@/components/ui/OverridePage"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Visi & Misi — PPTQ Anas Bin Malik",
@@ -24,7 +28,20 @@ const NILAI = [
   { arabic: "اسْتِقَامَة", latin: "Istiqomah", desc: "Konsisten dan teguh dalam menghafal, belajar, dan beribadah." },
 ]
 
-export default function VisiMisiPage() {
+export default async function VisiMisiPage() {
+  const override = await getPageContent<{ html?: string }>("visi_misi")
+  if (override?.html) {
+    return (
+      <OverridePage
+        arabicTitle="الرُّؤْيَةُ وَالرِّسَالَة"
+        title="Visi & Misi"
+        subtitle="Landasan filosofis dan arah gerak PPTQ Anas Bin Malik."
+        breadcrumbs={[{ label: "Beranda" }, { label: "Profil" }, { label: "Visi & Misi" }]}
+        html={override.html}
+        withSidebar
+      />
+    )
+  }
   return (
     <>
       <PageHero

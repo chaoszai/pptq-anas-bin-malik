@@ -2,6 +2,10 @@ import { PageHero } from "@/components/ui/PageHero"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { PROGRAMS } from "@/lib/constants"
+import { getPageContent } from "@/lib/content"
+import { OverridePage } from "@/components/ui/OverridePage"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Kurikulum — PPTQ Anas Bin Malik",
@@ -33,7 +37,19 @@ const JENJANG = [
   { level: "Marhalah Khamisah (Tingkat V)", duration: "1 Tahun", target: "Hafalan 30 juz — wisuda huffazh" },
 ]
 
-export default function KurikulumPage() {
+export default async function KurikulumPage() {
+  const override = await getPageContent<{ html?: string }>("kurikulum")
+  if (override?.html) {
+    return (
+      <OverridePage
+        arabicTitle="الْمَنْهَجُ الدِّرَاسِي"
+        title="Kurikulum"
+        subtitle="Program pendidikan komprehensif PPTQ Anas Bin Malik."
+        breadcrumbs={[{ label: "Beranda" }, { label: "Kurikulum" }]}
+        html={override.html}
+      />
+    )
+  }
   return (
     <>
       <PageHero

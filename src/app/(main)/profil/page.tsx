@@ -4,12 +4,29 @@ import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { CornerOrnament } from "@/components/ornaments/CornerOrnament"
 import { PONDOK_INFO, CONTACT, STATS } from "@/lib/constants"
+import { getPageContent } from "@/lib/content"
+import { OverridePage } from "@/components/ui/OverridePage"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Tentang Kami — PPTQ Anas Bin Malik",
 }
 
-export default function ProfilPage() {
+export default async function ProfilPage() {
+  const override = await getPageContent<{ html?: string }>("profil")
+  if (override?.html) {
+    return (
+      <OverridePage
+        arabicTitle="عَنْ مَعْهَدِنَا"
+        title="Tentang Kami"
+        subtitle="Mengenal lebih dekat Pondok Pesantren Tahfidzul Qur'an Anas Bin Malik."
+        breadcrumbs={[{ label: "Beranda", href: "/" }, { label: "Tentang Kami" }]}
+        html={override.html}
+        withSidebar
+      />
+    )
+  }
   return (
     <>
       <PageHero

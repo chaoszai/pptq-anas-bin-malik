@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { FadeIn } from "@/components/motion/FadeIn"
+import type { Artikel } from "@/types/content"
 
 const PLACEHOLDER_ARTICLES = [
   {
@@ -29,7 +30,19 @@ const PLACEHOLDER_ARTICLES = [
   },
 ]
 
-export function LatestArticles() {
+export function LatestArticles({ articles }: { articles?: Artikel[] }) {
+  const items = articles
+    ? articles.map((a) => ({
+        category: a.kategori?.title ?? "Artikel",
+        date: a.publishedAt
+          ? new Date(a.publishedAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })
+          : "",
+        title: a.title,
+        excerpt: a.excerpt ?? "",
+        slug: a.slug,
+        thumbnail: a.thumbnailUrl,
+      }))
+    : PLACEHOLDER_ARTICLES.map((p) => ({ ...p, thumbnail: undefined as string | undefined }))
   return (
     <section className="py-24 px-6" style={{ background: "var(--color-ivory)" }}>
       <div className="max-w-6xl mx-auto">
@@ -66,26 +79,31 @@ export function LatestArticles() {
 
         {/* Articles grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {PLACEHOLDER_ARTICLES.map((article, i) => (
+          {items.map((article, i) => (
             <FadeIn key={i} delay={i * 0.1}>
               <Link
                 href={`/artikel/${article.slug}`}
                 className="group block"
               >
-                {/* Image placeholder */}
+                {/* Image */}
                 <div
-                  className="w-full aspect-video mb-5 flex items-center justify-center transition-opacity duration-300 group-hover:opacity-90"
+                  className="w-full aspect-video mb-5 flex items-center justify-center overflow-hidden transition-opacity duration-300 group-hover:opacity-90"
                   style={{
                     background: "var(--color-cream)",
                     border: "0.5px solid var(--color-sand)",
                   }}
                 >
-                  <span
-                    className="font-sans text-xs tracking-widest"
-                    style={{ color: "var(--color-sand)" }}
-                  >
-                    Foto Artikel
-                  </span>
+                  {article.thumbnail ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={article.thumbnail} alt={article.title} className="w-full h-full object-cover" />
+                  ) : (
+                    <span
+                      className="font-sans text-xs tracking-widest"
+                      style={{ color: "var(--color-sand)" }}
+                    >
+                      Foto Artikel
+                    </span>
+                  )}
                 </div>
 
                 {/* Meta */}

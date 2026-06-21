@@ -3,16 +3,24 @@ import { ArabesquePattern } from "@/components/ornaments/ArabesquePattern"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { FadeIn } from "@/components/motion/FadeIn"
 
-const GALLERY_ITEMS = [
-  { label: "Kegiatan Tahfidz", aspect: "aspect-square" },
-  { label: "Fasilitas Asrama", aspect: "aspect-[4/3]" },
-  { label: "Wisuda Huffazh", aspect: "aspect-[4/3]" },
-  { label: "Kegiatan Harian", aspect: "aspect-square" },
-  { label: "Masjid & Mushola", aspect: "aspect-[3/4]" },
-  { label: "Kegiatan Olahraga", aspect: "aspect-[3/4]" },
+const ASPECTS = ["aspect-square", "aspect-[4/3]", "aspect-[4/3]", "aspect-square", "aspect-[3/4]", "aspect-[3/4]"]
+
+const PLACEHOLDER = [
+  { label: "Kegiatan Tahfidz" },
+  { label: "Fasilitas Asrama" },
+  { label: "Wisuda Huffazh" },
+  { label: "Kegiatan Harian" },
+  { label: "Masjid & Mushola" },
+  { label: "Kegiatan Olahraga" },
 ]
 
-export function GalleryPreview() {
+export function GalleryPreview({ images }: { images?: { url: string; label: string }[] }) {
+  const source: { label: string; url?: string }[] = images ?? PLACEHOLDER
+  const GALLERY_ITEMS = source.map((it, i) => ({
+    label: it.label,
+    url: it.url,
+    aspect: ASPECTS[i % ASPECTS.length],
+  }))
   return (
     <section
       className="py-24 px-6 relative overflow-hidden"
@@ -58,6 +66,12 @@ export function GalleryPreview() {
                   border: "0.5px solid rgba(201,169,97,0.2)",
                 }}
               >
+                {/* Image */}
+                {item.url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.url} alt={item.label} className="absolute inset-0 w-full h-full object-cover" />
+                )}
+
                 {/* Hover overlay */}
                 <div
                   className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"

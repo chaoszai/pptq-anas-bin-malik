@@ -1,24 +1,15 @@
 import { PageHero } from "@/components/ui/PageHero"
-import { sanityClient } from "@/lib/sanity/client"
-import { galeriQuery } from "@/lib/sanity/queries"
+import { getGaleriAlbums } from "@/lib/content"
 import { GaleriGrid } from "@/components/galeri/GaleriGrid"
 
-export const revalidate = 60
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Galeri — PPTQ Anas Bin Malik",
 }
 
-async function getAlbums() {
-  try {
-    return await sanityClient.fetch(galeriQuery)
-  } catch {
-    return []
-  }
-}
-
 export default async function GaleriPage() {
-  const albums = await getAlbums()
+  const albums = await getGaleriAlbums()
 
   return (
     <>

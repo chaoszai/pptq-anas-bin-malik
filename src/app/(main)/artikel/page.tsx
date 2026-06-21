@@ -1,40 +1,18 @@
 import Link from "next/link"
-import Image from "next/image"
 import { PageHero } from "@/components/ui/PageHero"
 import { FadeIn } from "@/components/motion/FadeIn"
-import { sanityClient } from "@/lib/sanity/client"
-import { artikelQuery } from "@/lib/sanity/queries"
-import { urlFor } from "@/lib/sanity/image"
+import { getArtikelList } from "@/lib/content"
 
-export const revalidate = 60
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Artikel — PPTQ Anas Bin Malik",
 }
 
-interface ArtikelItem {
-  _id: string
-  title: string
-  slug: { current: string }
-  excerpt: string
-  thumbnail?: { asset: { _ref: string } }
-  publishedAt?: string
-  kategori?: { title: string }
-}
-
-const KATEGORI_STATIC = ["Semua", "Tahfidz", "Metode", "PSB", "Kegiatan", "Ilmu Al-Qur'an"]
-
-async function getArtikel(): Promise<ArtikelItem[]> {
-  try {
-    return await sanityClient.fetch(artikelQuery)
-  } catch {
-    return []
-  }
-}
-
 export default async function ArtikelPage() {
-  const articles = await getArtikel()
+  const articles = await getArtikelList()
   const isEmpty = articles.length === 0
+  const kategoriSet = ["Semua", ...Array.from(new Set(articles.map((a) => a.kategori?.title).filter(Boolean) as string[]))]
 
   return (
     <>
@@ -48,10 +26,9 @@ export default async function ArtikelPage() {
       <div className="py-16 px-6" style={{ background: "var(--color-cream)" }}>
         <div className="max-w-5xl mx-auto">
 
-          {/* Filter tab (static display, interactivity via Milestone 6+) */}
           <FadeIn>
             <div className="flex flex-wrap gap-2 mb-10">
-              {KATEGORI_STATIC.map((kat, i) => (
+              {kategoriSet.map((kat, i) => (
                 <span
                   key={kat}
                   className="px-4 py-2 font-sans text-xs tracking-wider"
@@ -77,38 +54,25 @@ export default async function ArtikelPage() {
                   لَا مَقَالَات
                 </p>
                 <p className="font-sans text-sm" style={{ color: "var(--color-walnut)" }}>
-                  Belum ada artikel. Tambahkan melalui Sanity Studio.
+                  Belum ada artikel.
                 </p>
-                <Link
-                  href="/studio"
-                  className="font-sans text-xs tracking-wider underline"
-                  style={{ color: "var(--color-emerald-deep)" }}
-                >
-                  Buka Studio →
-                </Link>
               </div>
             </FadeIn>
           ) : (
             <div className="space-y-6">
               {articles.map((article, i) => (
-                <FadeIn key={article._id} delay={i * 0.07}>
+                <FadeIn key={article.id} delay={i * 0.07}>
                   <Link
-                    href={`/artikel/${article.slug.current}`}
+                    href={`/artikel/${article.slug}`}
                     className="group flex flex-col sm:flex-row gap-5 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                     style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
                   >
-                    {/* Thumbnail */}
                     <div className="shrink-0 w-full sm:w-40 aspect-video sm:aspect-auto sm:h-28 overflow-hidden"
                       style={{ background: "var(--color-cream)", border: "0.5px solid var(--color-sand)" }}
                     >
-                      {article.thumbnail ? (
-                        <Image
-                          src={urlFor(article.thumbnail).width(320).height(224).url()}
-                          alt={article.title}
-                          width={320}
-                          height={224}
-                          className="w-full h-full object-cover"
-                        />
+                      {article.thumbnailUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={article.thumbnailUrl} alt={article.title} className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <p className="font-sans text-[10px]" style={{ color: "var(--color-sand)" }}>Foto</p>
