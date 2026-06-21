@@ -33,7 +33,7 @@ export async function uploadImage(file: File): Promise<string> {
   if (!ALLOWED.includes(file.type)) throw new Error("Tipe file tidak didukung")
 
   const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin"
-  const key = `uploads/${new Date().getFullYear()}/${randomUUID()}.${ext}`
+  const key = `pptq/${new Date().getFullYear()}/${randomUUID()}.${ext}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
   await getClient().send(

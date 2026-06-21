@@ -14,6 +14,15 @@ const PREVIEW_PAGES = [
   { label: "Kontak", path: "/kontak" },
 ]
 
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
+      <h2 className="font-semibold text-gray-900">{title}</h2>
+      {children}
+    </div>
+  )
+}
+
 export function KontenForm({ initial }: { initial: SiteSettings }) {
   const router = useRouter()
   const [s, setS] = useState<SiteSettings>(initial)
@@ -40,13 +49,6 @@ export function KontenForm({ initial }: { initial: SiteSettings }) {
       setSaving(false)
     }
   }
-
-  const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
-      <h2 className="font-semibold text-gray-900">{title}</h2>
-      {children}
-    </div>
-  )
 
   return (
     <div className="flex h-full min-h-screen">

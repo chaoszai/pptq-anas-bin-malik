@@ -18,6 +18,8 @@ import type { SiteSettings } from "@/types/siteSettings"
 export function HeroSection({ settings }: { settings?: SiteSettings }) {
   const siteName = settings?.siteName ?? SITE_NAME
   const tagline = settings?.tagline ?? SITE_TAGLINE
+  const heroHeading = settings?.heroHeading || siteName
+  const heroSubheading = settings?.heroSubheading || "Mencetak Generasi Ḥuffāẓ Berakhlakul Karimah"
   const waNumber = settings?.whatsapp
     ? `62${settings.whatsapp.replace(/^0/, "")}`
     : "628123456789"
@@ -91,7 +93,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
 
         {/* Main heading */}
         <StaggerText
-          text="Anas Bin Malik"
+          text={heroHeading}
           as="h1"
           delay={0.85}
           stagger={0.12}
@@ -108,9 +110,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
           className="font-sans font-light text-lg md:text-xl mt-3 mb-10 max-w-lg leading-relaxed"
           style={{ color: "rgba(255,255,255,0.55)" }}
         >
-          Mencetak Generasi{" "}
-          <em className="font-display italic not-italic" style={{ color: "var(--color-gold-antique)" }}>Ḥuffāẓ</em>{" "}
-          Berakhlakul Karimah
+          {heroSubheading}
         </motion.p>
 
         {/* Hadits box */}
