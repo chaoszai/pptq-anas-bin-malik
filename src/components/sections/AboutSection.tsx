@@ -28,6 +28,10 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
   const tahunBerdiri = settings?.tahunBerdiri ?? PONDOK_INFO.tahunBerdiri
   const tahunBerkiprah = new Date().getFullYear() - parseInt(tahunBerdiri)
   const siteName = settings?.siteName ?? SITE_NAME
+  const aboutText =
+    settings?.aboutText ??
+    `${siteName} berdiri sejak ${tahunBerdiri} dengan tekad melahirkan generasi hafidz yang tidak hanya kuat hafalannya, tetapi juga kokoh ilmu agama dan mulia akhlaknya. Bimbingan langsung dengan sanad bersambung kepada Rasulullah ﷺ menjadi keunggulan metode talaqqi kami.`
+  const aboutImage = settings?.aboutImage
   return (
     <section className="py-24 px-6 overflow-hidden" style={{ background: "var(--color-cream)" }}>
       <div className="max-w-6xl mx-auto">
@@ -55,28 +59,38 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
           {/* Left: image placeholder */}
           <FadeIn x={-30}>
             <div className="relative">
-              {/* Main image placeholder */}
+              {/* Main image (atau placeholder) */}
               <div
-                className="relative w-full aspect-[4/5] max-w-md mx-auto"
-                style={{ background: "var(--color-ivory)" }}
+                data-cms-field="aboutImage"
+                className="relative w-full aspect-[4/5] max-w-md mx-auto overflow-hidden"
+                style={{
+                  background: "var(--color-ivory)",
+                  backgroundImage: aboutImage ? `url(${aboutImage})` : undefined,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
               >
                 <CornerOrnament color="var(--color-gold-antique)" size={20} />
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
-                  <ArabesquePattern size={200} opacity={0.12} />
-                  <p
-                    className="font-arabic text-3xl absolute"
-                    dir="rtl"
-                    style={{ color: "var(--color-emerald-deep)", opacity: 0.3 }}
-                  >
-                    {BISMILLAH}
-                  </p>
-                </div>
-                <p
-                  className="absolute bottom-4 left-0 right-0 text-center font-sans text-xs tracking-widest uppercase"
-                  style={{ color: "var(--color-sand)" }}
-                >
-                  Foto Pondok
-                </p>
+                {!aboutImage && (
+                  <>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center gap-3">
+                      <ArabesquePattern size={200} opacity={0.12} />
+                      <p
+                        className="font-arabic text-3xl absolute"
+                        dir="rtl"
+                        style={{ color: "var(--color-emerald-deep)", opacity: 0.3 }}
+                      >
+                        {BISMILLAH}
+                      </p>
+                    </div>
+                    <p
+                      className="absolute bottom-4 left-0 right-0 text-center font-sans text-xs tracking-widest uppercase"
+                      style={{ color: "var(--color-sand)" }}
+                    >
+                      Foto Pondok
+                    </p>
+                  </>
+                )}
               </div>
 
               {/* Floating badge */}
@@ -111,13 +125,11 @@ export function AboutSection({ settings }: { settings?: SiteSettings }) {
                   Tempat Santri Tumbuh Bersama Al-Qur&apos;an
                 </h2>
                 <p
+                  data-cms-field="aboutText"
                   className="font-sans text-base leading-relaxed"
                   style={{ color: "var(--color-walnut)" }}
                 >
-                  {siteName} berdiri sejak {tahunBerdiri} dengan tekad melahirkan
-                  generasi hafidz yang tidak hanya kuat hafalannya, tetapi juga kokoh ilmu agama
-                  dan mulia akhlaknya. Bimbingan langsung dengan sanad bersambung kepada Rasulullah
-                  ﷺ menjadi keunggulan metode talaqqi kami.
+                  {aboutText}
                 </p>
               </div>
 

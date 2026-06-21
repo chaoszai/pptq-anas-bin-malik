@@ -92,18 +92,21 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
         </motion.p>
 
         {/* Main heading */}
-        <StaggerText
-          text={heroHeading}
-          as="h1"
-          delay={0.85}
-          stagger={0.12}
-          duration={0.9}
-          className="font-display font-semibold italic leading-tight mb-2"
-          wordClassName="text-[3.2rem] md:text-[4.8rem] lg:text-[6rem] text-white"
-        />
+        <div data-cms-field="heroHeading">
+          <StaggerText
+            text={heroHeading}
+            as="h1"
+            delay={0.85}
+            stagger={0.12}
+            duration={0.9}
+            className="font-display font-semibold italic leading-tight mb-2 text-[3.2rem] md:text-[4.8rem] lg:text-[6rem] text-white"
+            wordClassName="text-[3.2rem] md:text-[4.8rem] lg:text-[6rem] text-white"
+          />
+        </div>
 
         {/* Tagline */}
         <motion.p
+          data-cms-field="heroSubheading"
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.3 }}

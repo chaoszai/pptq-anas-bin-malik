@@ -159,6 +159,7 @@ export function Navbar({ settings }: { settings?: SiteSettings }) {
             />
             <div className="leading-tight">
               <div
+                data-cms-field="siteName"
                 className="font-sans font-semibold text-base"
                 style={{ color: "var(--color-ink)", letterSpacing: "0.01em" }}
               >

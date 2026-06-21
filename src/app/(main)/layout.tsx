@@ -3,6 +3,7 @@ import { Navbar } from "@/components/layout/Navbar"
 import { Footer } from "@/components/layout/Footer"
 import { WhatsAppFloat } from "@/components/layout/WhatsAppFloat"
 import { SmoothScroll } from "@/components/layout/SmoothScroll"
+import { CmsEditBridge } from "@/components/cms/CmsEditBridge"
 import { getSiteSettings } from "@/lib/content"
 
 export default async function MainLayout({
@@ -21,6 +22,7 @@ export default async function MainLayout({
         <Footer settings={settings} />
         <WhatsAppFloat settings={settings} />
       </div>
+      <CmsEditBridge />
     </SmoothScroll>
   )
 }

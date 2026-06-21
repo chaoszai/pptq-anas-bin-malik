@@ -9,10 +9,10 @@ import type { SiteSettings } from "@/types/siteSettings"
 
 export function StatsBar({ settings }: { settings?: SiteSettings }) {
   const stats = [
-    { value: settings?.totalSantri ?? PONDOK_INFO.totalSantri, label: "Santri Aktif", suffix: "+", arabicLabel: "طَالِب" },
-    { value: settings?.alumniHuffazh ?? PONDOK_INFO.alumniHuffazh, label: "Alumni Huffazh", suffix: "+", arabicLabel: "حَافِظ" },
-    { value: 30, label: "Target Hafalan", suffix: " Juz", arabicLabel: "جُزْء" },
-    { value: new Date().getFullYear() - parseInt(settings?.tahunBerdiri ?? "2015"), label: "Tahun Berkiprah", suffix: "+", arabicLabel: "سَنَة" },
+    { value: settings?.totalSantri ?? PONDOK_INFO.totalSantri, label: "Santri Aktif", suffix: "+", arabicLabel: "طَالِب", cms: "totalSantri" },
+    { value: settings?.alumniHuffazh ?? PONDOK_INFO.alumniHuffazh, label: "Alumni Huffazh", suffix: "+", arabicLabel: "حَافِظ", cms: "alumniHuffazh" },
+    { value: 30, label: "Target Hafalan", suffix: " Juz", arabicLabel: "جُزْء", cms: undefined },
+    { value: new Date().getFullYear() - parseInt(settings?.tahunBerdiri ?? "2015"), label: "Tahun Berkiprah", suffix: "+", arabicLabel: "سَنَة", cms: undefined },
   ]
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
@@ -40,15 +40,17 @@ export function StatsBar({ settings }: { settings?: SiteSettings }) {
                 className="font-display font-semibold leading-none"
                 style={{ color: "var(--color-emerald-deep)", fontSize: "clamp(2.5rem, 5vw, 3.5rem)" }}
               >
-                {isInView ? (
-                  <CountUp
-                    start={0}
-                    end={stat.value}
-                    duration={2.2}
-                    delay={i * 0.15}
-                    separator="."
-                  />
-                ) : "0"}
+                <span {...(stat.cms ? { "data-cms-field": stat.cms } : {})}>
+                  {isInView ? (
+                    <CountUp
+                      start={0}
+                      end={stat.value}
+                      duration={2.2}
+                      delay={i * 0.15}
+                      separator="."
+                    />
+                  ) : "0"}
+                </span>
                 <span
                   className="font-sans font-light text-xl ml-0.5"
                   style={{ color: "var(--color-gold-antique)" }}
