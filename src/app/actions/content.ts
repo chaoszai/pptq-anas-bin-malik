@@ -26,7 +26,7 @@ export async function saveSiteSettings(data: Record<string, unknown>) {
       instagram=$15, youtube=$16, facebook=$17, tiktok=$18,
       total_santri=$19, alumni_huffazh=$20, program_count=$21,
       hero_heading=$22, hero_subheading=$23, hero_image_url=$24,
-      about_text=$25, about_image_url=$26, psb_waves=$27, updated_at=now()
+      about_text=$25, about_image_url=$26, psb_waves=$27, poster_psb=$28, updated_at=now()
      WHERE id = 1`,
     [
       data.siteName ?? null, data.siteFullName ?? null, data.tagline ?? null, data.logo ?? null,
@@ -35,7 +35,7 @@ export async function saveSiteSettings(data: Record<string, unknown>) {
       data.instagram ?? null, data.youtube ?? null, data.facebook ?? null, data.tiktok ?? null,
       data.totalSantri ?? null, data.alumniHuffazh ?? null, data.programCount ?? null,
       data.heroHeading ?? null, data.heroSubheading ?? null, data.heroImage ?? null,
-      data.aboutText ?? null, data.aboutImage ?? null, JSON.stringify(waves),
+      data.aboutText ?? null, data.aboutImage ?? null, JSON.stringify(waves), data.posterPsb ?? null,
     ]
   )
   revalidateAll()

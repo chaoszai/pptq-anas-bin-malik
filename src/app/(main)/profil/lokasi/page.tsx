@@ -2,12 +2,23 @@ import { PageHero } from "@/components/ui/PageHero"
 import { ProfilSidebar } from "@/components/ui/ProfilSidebar"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { CONTACT } from "@/lib/constants"
+import { getSiteSettings } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Lokasi — PPTQ Anas Bin Malik",
 }
 
-export default function LokasiPage() {
+export default async function LokasiPage() {
+  const s = await getSiteSettings()
+
+  const address = s.address ?? CONTACT.address
+  const city = s.city ?? CONTACT.city
+  const phone = s.phone ?? CONTACT.phone
+  const email = s.email ?? CONTACT.email
+  const mapsUrl = s.mapsUrl ?? CONTACT.mapsUrl
+
   return (
     <>
       <PageHero
@@ -24,13 +35,12 @@ export default function LokasiPage() {
           <main className="flex-1 min-w-0">
             <FadeIn>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                {/* Info kontak */}
                 <div className="space-y-4">
                   {[
-                    { label: "Alamat Lengkap", value: CONTACT.address, arabic: "الْعُنْوَان" },
-                    { label: "Kota", value: CONTACT.city, arabic: "الْمَدِينَة" },
-                    { label: "Telepon / WhatsApp", value: CONTACT.phone, arabic: "الْهَاتِف" },
-                    { label: "Email", value: CONTACT.email, arabic: "الْبَرِيد" },
+                    { label: "Alamat Lengkap", value: address, arabic: "الْعُنْوَان" },
+                    { label: "Kota", value: city, arabic: "الْمَدِينَة" },
+                    { label: "Telepon / WhatsApp", value: phone, arabic: "الْهَاتِف" },
+                    { label: "Email", value: email, arabic: "الْبَرِيد" },
                   ].map((item, i) => (
                     <div
                       key={i}
@@ -50,7 +60,6 @@ export default function LokasiPage() {
                   ))}
                 </div>
 
-                {/* Petunjuk arah */}
                 <div
                   className="p-6"
                   style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
@@ -79,7 +88,7 @@ export default function LokasiPage() {
                 </div>
               </div>
 
-              {/* Map placeholder */}
+              {/* Map */}
               <div
                 className="w-full h-80 flex items-center justify-center"
                 style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
@@ -91,15 +100,17 @@ export default function LokasiPage() {
                   <p className="font-sans text-sm" style={{ color: "var(--color-sand)" }}>
                     Google Maps Embed
                   </p>
-                  <a
-                    href={CONTACT.mapsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 font-sans text-sm font-medium transition-opacity hover:opacity-80"
-                    style={{ background: "var(--color-emerald-deep)", color: "var(--color-cream)" }}
-                  >
-                    Buka di Google Maps →
-                  </a>
+                  {mapsUrl && (
+                    <a
+                      href={mapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 font-sans text-sm font-medium transition-opacity hover:opacity-80"
+                      style={{ background: "var(--color-emerald-deep)", color: "var(--color-cream)" }}
+                    >
+                      Buka di Google Maps →
+                    </a>
+                  )}
                 </div>
               </div>
             </FadeIn>

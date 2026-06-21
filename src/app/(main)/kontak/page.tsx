@@ -2,12 +2,27 @@ import { PageHero } from "@/components/ui/PageHero"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { CONTACT, SOCIAL, BISMILLAH } from "@/lib/constants"
+import { getSiteSettings } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Kontak — PPTQ Anas Bin Malik",
 }
 
-export default function KontakPage() {
+export default async function KontakPage() {
+  const s = await getSiteSettings()
+
+  const address = s.address ?? CONTACT.address
+  const phone = s.phone ?? CONTACT.phone
+  const email = s.email ?? CONTACT.email
+  const whatsapp = s.whatsapp ?? CONTACT.phone
+  const whatsappUrl = whatsapp
+    ? `https://wa.me/${whatsapp.replace(/\D/g, "")}`
+    : CONTACT.whatsappUrl
+  const instagram = s.instagram ?? SOCIAL.instagram
+  const youtube = s.youtube ?? SOCIAL.youtube
+
   return (
     <>
       <PageHero
@@ -25,11 +40,7 @@ export default function KontakPage() {
             <FadeIn>
               <div className="space-y-6">
                 <div>
-                  <p
-                    className="font-arabic text-xl mb-3"
-                    dir="rtl"
-                    style={{ color: "var(--color-gold-antique)" }}
-                  >
+                  <p className="font-arabic text-xl mb-3" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
                     {BISMILLAH}
                   </p>
                   <p className="font-sans text-base leading-relaxed" style={{ color: "var(--color-walnut)" }}>
@@ -42,23 +53,9 @@ export default function KontakPage() {
 
                 <div className="space-y-4">
                   {[
-                    {
-                      arabic: "الْعُنْوَان",
-                      label: "Alamat",
-                      value: CONTACT.address,
-                    },
-                    {
-                      arabic: "الْهَاتِف",
-                      label: "Telepon / WhatsApp",
-                      value: CONTACT.phone,
-                      href: CONTACT.whatsappUrl,
-                    },
-                    {
-                      arabic: "الْبَرِيد",
-                      label: "Email",
-                      value: CONTACT.email,
-                      href: `mailto:${CONTACT.email}`,
-                    },
+                    { arabic: "الْعُنْوَان", label: "Alamat", value: address },
+                    { arabic: "الْهَاتِف", label: "Telepon / WhatsApp", value: phone, href: whatsappUrl },
+                    { arabic: "الْبَرِيد", label: "Email", value: email, href: `mailto:${email}` },
                   ].map((item, i) => (
                     <div
                       key={i}
@@ -90,25 +87,26 @@ export default function KontakPage() {
                   ))}
                 </div>
 
-                {/* Sosmed */}
                 <div>
                   <p className="font-sans text-xs tracking-widest uppercase mb-3" style={{ color: "var(--color-gold-muted)" }}>
                     Media Sosial
                   </p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 flex-wrap">
                     {[
-                      { label: "Instagram", href: SOCIAL.instagram },
-                      { label: "YouTube", href: SOCIAL.youtube },
-                    ].map((s) => (
+                      { label: "Instagram", href: instagram },
+                      { label: "YouTube", href: youtube },
+                      ...(s.facebook ? [{ label: "Facebook", href: s.facebook }] : []),
+                      ...(s.tiktok ? [{ label: "TikTok", href: s.tiktok }] : []),
+                    ].filter((x) => x.href).map((social) => (
                       <a
-                        key={s.label}
-                        href={s.href}
+                        key={social.label}
+                        href={social.href}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-4 py-2 font-sans text-xs tracking-wider transition-opacity hover:opacity-75"
                         style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)", color: "var(--color-walnut)" }}
                       >
-                        {s.label}
+                        {social.label}
                       </a>
                     ))}
                   </div>
@@ -116,7 +114,7 @@ export default function KontakPage() {
               </div>
             </FadeIn>
 
-            {/* Right: form */}
+            {/* Right: contact form (static — belum ada backend) */}
             <FadeIn delay={0.15}>
               <div
                 className="p-8"
@@ -148,21 +146,12 @@ export default function KontakPage() {
                         type={field.type}
                         placeholder={field.placeholder}
                         className="w-full px-4 py-3 font-sans text-sm outline-none transition-all duration-200"
-                        style={{
-                          background: "var(--color-cream)",
-                          border: "0.5px solid var(--color-sand)",
-                          color: "var(--color-ink)",
-                        }}
+                        style={{ background: "var(--color-cream)", border: "0.5px solid var(--color-sand)", color: "var(--color-ink)" }}
                       />
                     </div>
                   ))}
-
                   <div>
-                    <label
-                      htmlFor="pesan"
-                      className="block font-sans text-xs tracking-wider uppercase mb-2"
-                      style={{ color: "var(--color-walnut)" }}
-                    >
+                    <label htmlFor="pesan" className="block font-sans text-xs tracking-wider uppercase mb-2" style={{ color: "var(--color-walnut)" }}>
                       Pesan
                     </label>
                     <textarea
@@ -170,24 +159,18 @@ export default function KontakPage() {
                       rows={5}
                       placeholder="Tulis pesan atau pertanyaan Anda di sini..."
                       className="w-full px-4 py-3 font-sans text-sm outline-none transition-all duration-200 resize-none"
-                      style={{
-                        background: "var(--color-cream)",
-                        border: "0.5px solid var(--color-sand)",
-                        color: "var(--color-ink)",
-                      }}
+                      style={{ background: "var(--color-cream)", border: "0.5px solid var(--color-sand)", color: "var(--color-ink)" }}
                     />
                   </div>
-
-                  <button
-                    type="submit"
-                    className="w-full py-3.5 font-sans text-sm font-medium tracking-wider transition-opacity hover:opacity-90"
-                    style={{
-                      background: "var(--color-emerald-deep)",
-                      color: "var(--color-cream)",
-                    }}
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full py-3.5 font-sans text-sm font-medium tracking-wider text-center transition-opacity hover:opacity-90"
+                    style={{ background: "var(--color-emerald-deep)", color: "var(--color-cream)" }}
                   >
-                    Kirim Pesan
-                  </button>
+                    Hubungi via WhatsApp →
+                  </a>
                 </form>
               </div>
             </FadeIn>

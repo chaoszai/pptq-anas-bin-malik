@@ -1,8 +1,12 @@
 import Link from "next/link"
+import Image from "next/image"
 import { PageHero } from "@/components/ui/PageHero"
 import { FadeIn } from "@/components/motion/FadeIn"
 import { GeometricDivider } from "@/components/ornaments/GeometricDivider"
 import { PSB_WAVES, CONTACT, BISMILLAH } from "@/lib/constants"
+import { getSiteSettings, getPageContent } from "@/lib/content"
+
+export const dynamic = "force-dynamic"
 
 export const metadata = {
   title: "Pendaftaran Santri Baru — PPTQ Anas Bin Malik",
@@ -35,8 +39,17 @@ const ALUR = [
   { step: "06", arabic: "الْقُدُوم", title: "Masuk Pondok", desc: "Santri baru resmi masuk dan mengikuti masa orientasi pondok." },
 ]
 
-export default function PSBPage() {
-  const activeWave = PSB_WAVES[1]
+export default async function PSBPage() {
+  const [settings, override] = await Promise.all([
+    getSiteSettings(),
+    getPageContent<{ html?: string }>("psb"),
+  ])
+
+  const waves = settings.psbWaves?.length ? settings.psbWaves : PSB_WAVES
+  const activeWave = waves[1] ?? waves[0]
+  const whatsappUrl = settings.whatsapp
+    ? `https://wa.me/${settings.whatsapp.replace(/\D/g, "")}`
+    : CONTACT.whatsappUrl
 
   return (
     <>
@@ -50,6 +63,27 @@ export default function PSBPage() {
       <div className="py-16 px-6" style={{ background: "var(--color-cream)" }}>
         <div className="max-w-5xl mx-auto space-y-20">
 
+          {/* Poster PPDB */}
+          {settings.posterPsb && (
+            <FadeIn>
+              <div className="text-center">
+                <p className="font-sans text-xs tracking-[0.2em] uppercase mb-4" style={{ color: "var(--color-gold-muted)" }}>
+                  Poster Pendaftaran
+                </p>
+                <div className="max-w-lg mx-auto">
+                  <Image
+                    src={settings.posterPsb}
+                    alt="Poster PPDB"
+                    width={600}
+                    height={850}
+                    className="w-full h-auto object-contain"
+                    style={{ border: "0.5px solid var(--color-sand)" }}
+                  />
+                </div>
+              </div>
+            </FadeIn>
+          )}
+
           {/* Gelombang */}
           <FadeIn>
             <div className="text-center mb-10">
@@ -59,7 +93,7 @@ export default function PSBPage() {
               <GeometricDivider label="Gelombang PSB" className="max-w-xs mx-auto mb-8" />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {PSB_WAVES.map((wave) => {
+              {waves.map((wave) => {
                 const isActive = wave.id === activeWave.id
                 return (
                   <div
@@ -101,93 +135,100 @@ export default function PSBPage() {
             <GeometricDivider />
           </FadeIn>
 
-          {/* Alur Pendaftaran */}
-          <FadeIn delay={0.1}>
-            <div>
-              <div className="text-center mb-10">
-                <p className="font-sans text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "var(--color-gold-muted)" }}>
-                  Langkah demi Langkah
-                </p>
-                <GeometricDivider label="Alur Pendaftaran" className="max-w-xs mx-auto" />
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {ALUR.map((item, i) => (
-                  <div
-                    key={i}
-                    className="p-6"
-                    style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <span
-                        className="font-display italic text-4xl leading-none"
-                        style={{ color: "var(--color-sand)" }}
-                      >
-                        {item.step}
-                      </span>
-                      <p className="font-arabic text-sm" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
-                        {item.arabic}
-                      </p>
-                    </div>
-                    <h3 className="font-sans font-semibold text-sm mb-2" style={{ color: "var(--color-emerald-deep)" }}>
-                      {item.title}
-                    </h3>
-                    <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--color-walnut)" }}>
-                      {item.desc}
+          {/* Konten PSB: override dari admin atau default hardcode */}
+          {override?.html ? (
+            <FadeIn>
+              <div
+                className="prose-custom font-sans text-sm leading-relaxed"
+                style={{ color: "var(--color-walnut)" }}
+                dangerouslySetInnerHTML={{ __html: override.html }}
+              />
+            </FadeIn>
+          ) : (
+            <>
+              <FadeIn delay={0.1}>
+                <div>
+                  <div className="text-center mb-10">
+                    <p className="font-sans text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "var(--color-gold-muted)" }}>
+                      Langkah demi Langkah
                     </p>
+                    <GeometricDivider label="Alur Pendaftaran" className="max-w-xs mx-auto" />
                   </div>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {ALUR.map((item, i) => (
+                      <div
+                        key={i}
+                        className="p-6"
+                        style={{ background: "var(--color-ivory)", border: "0.5px solid var(--color-sand)" }}
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <span className="font-display italic text-4xl leading-none" style={{ color: "var(--color-sand)" }}>
+                            {item.step}
+                          </span>
+                          <p className="font-arabic text-sm" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
+                            {item.arabic}
+                          </p>
+                        </div>
+                        <h3 className="font-sans font-semibold text-sm mb-2" style={{ color: "var(--color-emerald-deep)" }}>
+                          {item.title}
+                        </h3>
+                        <p className="font-sans text-xs leading-relaxed" style={{ color: "var(--color-walnut)" }}>
+                          {item.desc}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </FadeIn>
 
-          <FadeIn>
-            <GeometricDivider />
-          </FadeIn>
+              <FadeIn>
+                <GeometricDivider />
+              </FadeIn>
 
-          {/* Syarat & Dokumen */}
-          <FadeIn delay={0.15}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              <div>
-                <p className="font-arabic text-xl mb-2" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
-                  شُرُوطُ الْقَبُول
-                </p>
-                <h2 className="font-display italic font-semibold text-xl mb-5" style={{ color: "var(--color-ink)" }}>
-                  Syarat Umum
-                </h2>
-                <ul className="space-y-3">
-                  {SYARAT_UMUM.map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span style={{ color: "var(--color-gold-antique)" }}>✓</span>
-                      <p className="font-sans text-sm leading-relaxed" style={{ color: "var(--color-walnut)" }}>
-                        {item}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <p className="font-arabic text-xl mb-2" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
-                  الْوَثَائِقُ الْمَطْلُوبَة
-                </p>
-                <h2 className="font-display italic font-semibold text-xl mb-5" style={{ color: "var(--color-ink)" }}>
-                  Dokumen yang Diperlukan
-                </h2>
-                <ul className="space-y-3">
-                  {DOKUMEN.map((item, i) => (
-                    <li key={i} className="flex gap-3">
-                      <span className="font-display italic" style={{ color: "var(--color-gold-antique)" }}>
-                        {i + 1}.
-                      </span>
-                      <p className="font-sans text-sm leading-relaxed" style={{ color: "var(--color-walnut)" }}>
-                        {item}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </FadeIn>
+              <FadeIn delay={0.15}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                  <div>
+                    <p className="font-arabic text-xl mb-2" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
+                      شُرُوطُ الْقَبُول
+                    </p>
+                    <h2 className="font-display italic font-semibold text-xl mb-5" style={{ color: "var(--color-ink)" }}>
+                      Syarat Umum
+                    </h2>
+                    <ul className="space-y-3">
+                      {SYARAT_UMUM.map((item, i) => (
+                        <li key={i} className="flex gap-3">
+                          <span style={{ color: "var(--color-gold-antique)" }}>✓</span>
+                          <p className="font-sans text-sm leading-relaxed" style={{ color: "var(--color-walnut)" }}>
+                            {item}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-arabic text-xl mb-2" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
+                      الْوَثَائِقُ الْمَطْلُوبَة
+                    </p>
+                    <h2 className="font-display italic font-semibold text-xl mb-5" style={{ color: "var(--color-ink)" }}>
+                      Dokumen yang Diperlukan
+                    </h2>
+                    <ul className="space-y-3">
+                      {DOKUMEN.map((item, i) => (
+                        <li key={i} className="flex gap-3">
+                          <span className="font-display italic" style={{ color: "var(--color-gold-antique)" }}>
+                            {i + 1}.
+                          </span>
+                          <p className="font-sans text-sm leading-relaxed" style={{ color: "var(--color-walnut)" }}>
+                            {item}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </FadeIn>
+            </>
+          )}
 
           <FadeIn>
             <GeometricDivider />
@@ -195,23 +236,14 @@ export default function PSBPage() {
 
           {/* CTA */}
           <FadeIn delay={0.2}>
-            <div
-              className="p-10 text-center"
-              style={{ background: "var(--color-emerald-deep)" }}
-            >
+            <div className="p-10 text-center" style={{ background: "var(--color-emerald-deep)" }}>
               <p className="font-arabic text-2xl mb-6" dir="rtl" style={{ color: "var(--color-gold-antique)" }}>
                 {BISMILLAH}
               </p>
-              <h2
-                className="font-display italic font-semibold text-2xl mb-3"
-                style={{ color: "var(--color-cream)" }}
-              >
+              <h2 className="font-display italic font-semibold text-2xl mb-3" style={{ color: "var(--color-cream)" }}>
                 Siap Mendaftarkan Putra/Putri Anda?
               </h2>
-              <p
-                className="font-sans text-sm leading-relaxed mb-8 max-w-md mx-auto"
-                style={{ color: "rgba(255,255,255,0.65)" }}
-              >
+              <p className="font-sans text-sm leading-relaxed mb-8 max-w-md mx-auto" style={{ color: "rgba(255,255,255,0.65)" }}>
                 Daftarkan putra/putri Anda melalui formulir online kami. Proses cepat,
                 mudah, dan langsung terhubung dengan panitia PSB.
               </p>
@@ -224,7 +256,7 @@ export default function PSBPage() {
                   Daftar Sekarang →
                 </Link>
                 <a
-                  href={CONTACT.whatsappUrl}
+                  href={whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center px-8 py-3.5 font-sans text-sm font-medium tracking-wider transition-all hover:bg-white/10"

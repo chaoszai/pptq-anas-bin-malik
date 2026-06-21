@@ -9,6 +9,7 @@ export const STATIC_PAGES: HalamanDef[] = [
   { key: "sejarah", label: "Sejarah" },
   { key: "visi_misi", label: "Visi & Misi" },
   { key: "kurikulum", label: "Kurikulum" },
+  { key: "psb", label: "PSB (Syarat, Alur, Dokumen)" },
 ]
 
 export default async function HalamanPage() {

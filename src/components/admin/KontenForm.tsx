@@ -105,6 +105,11 @@ export function KontenForm({ initial }: { initial: SiteSettings }) {
           <ImageUpload label="Gambar Tentang" value={s.aboutImage} onChange={(v) => set("aboutImage", v)} />
         </Section>
 
+        <Section title="PSB / Pendaftaran Santri Baru">
+          <ImageUpload label="Poster PPDB (gambar brosur/flyer)" value={s.posterPsb} onChange={(v) => set("posterPsb", v)} />
+          <p className="text-xs text-gray-400">Untuk konten teks syarat, alur, dan dokumen PSB → edit di menu <strong>Halaman Statis → PSB</strong>.</p>
+        </Section>
+
         <Section title="Gelombang PSB">
           {waves.map((w, i) => (
             <div key={i} className="flex gap-2 items-end">

@@ -86,9 +86,11 @@ async function migrate() {
         about_text TEXT,
         about_image_url TEXT,
         psb_waves JSONB NOT NULL DEFAULT '[]'::jsonb,
+        poster_psb TEXT,
         updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
       );
       INSERT INTO site_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
+      ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS poster_psb TEXT;
 
       -- ============ Page Content (key-value untuk halaman statis) ============
       CREATE TABLE IF NOT EXISTS page_content (

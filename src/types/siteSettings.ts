@@ -32,4 +32,5 @@ export interface SiteSettings {
   aboutText?: string
   aboutImage?: string
   psbWaves?: PsbWave[]
+  posterPsb?: string
 }

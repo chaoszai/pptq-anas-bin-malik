@@ -50,6 +50,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
       aboutText: r.about_text ?? undefined,
       aboutImage: r.about_image_url ?? undefined,
       psbWaves: (r.psb_waves as PsbWave[]) ?? [],
+      posterPsb: r.poster_psb ?? undefined,
     }
   } catch {
     return {}
