@@ -67,7 +67,7 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="font-arabic text-3xl md:text-4xl mb-8"
+          className="font-arabic text-3xl md:text-4xl mb-8 mt-16"
           dir="rtl"
           style={{ color: "var(--color-gold-antique)" }}
         >
@@ -112,8 +112,8 @@ export function HeroSection({ settings }: { settings?: SiteSettings }) {
             delay={0.85}
             stagger={0.12}
             duration={0.9}
-            className="font-display font-semibold italic leading-tight mb-2 text-[3.2rem] md:text-[4.8rem] lg:text-[6rem] text-white"
-            wordClassName="text-[3.2rem] md:text-[4.8rem] lg:text-[6rem] text-white"
+            className="font-display font-semibold italic leading-tight mb-2 text-[2.4rem] md:text-[3.4rem] lg:text-[4.2rem] text-white"
+            wordClassName="text-[2.4rem] md:text-[3.4rem] lg:text-[4.2rem] text-white"
           />
         </div>
 
