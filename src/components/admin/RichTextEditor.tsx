@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
+import Placeholder from "@tiptap/extension-placeholder"
 import { useEffect, useRef } from "react"
 
 function Btn({
@@ -37,7 +38,11 @@ export function RichTextEditor({
 }) {
   const fileRef = useRef<HTMLInputElement>(null)
   const editor = useEditor({
-    extensions: [StarterKit, Image],
+    extensions: [
+      StarterKit,
+      Image,
+      Placeholder.configure({ placeholder: "Klik di sini untuk mulai menulis konten halaman ini…" }),
+    ],
     content: value ?? "",
     immediatelyRender: false,
     editorProps: {
@@ -48,13 +53,12 @@ export function RichTextEditor({
     onUpdate: ({ editor }) => onChange(editor.getHTML()),
   })
 
-  // keep editor in sync if value prop changes externally (e.g. load existing)
+  // keep editor in sync if value prop changes externally (e.g. tab switch)
   useEffect(() => {
     if (editor && value !== undefined && value !== editor.getHTML()) {
       editor.commands.setContent(value, { emitUpdate: false })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editor])
+  }, [editor, value])
 
   async function uploadInline(file: File) {
     const fd = new FormData()
