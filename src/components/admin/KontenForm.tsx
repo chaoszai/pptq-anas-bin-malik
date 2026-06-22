@@ -10,7 +10,15 @@ import { CMS_FIELDS } from "@/lib/cmsFields"
 
 const PREVIEW_PAGES = [
   { label: "Beranda", path: "/" },
-  { label: "Profil", path: "/profil" },
+  { label: "Profil", path: "/profil", children: [
+    { label: "Tentang Kami", path: "/profil" },
+    { label: "Sejarah", path: "/profil/sejarah" },
+    { label: "Visi & Misi", path: "/profil/visi-misi" },
+    { label: "Struktur", path: "/profil/struktur" },
+    { label: "Fasilitas", path: "/profil/fasilitas" },
+    { label: "Lokasi", path: "/profil/lokasi" },
+  ]},
+  { label: "Kurikulum", path: "/kurikulum" },
   { label: "PSB", path: "/psb" },
   { label: "Kontak", path: "/kontak" },
 ]
@@ -108,39 +116,62 @@ export function KontenForm({
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Toolbar atas */}
-      <div className="shrink-0 flex items-center gap-3 px-5 py-3 bg-white border-b border-gray-100">
-        <h1 className="text-lg font-semibold text-gray-900">Editor Visual</h1>
-        <div className="flex items-center gap-1.5 ml-2">
-          {PREVIEW_PAGES.map((p) => (
+      <div className="shrink-0 flex flex-col bg-white border-b border-gray-100">
+        <div className="flex items-center gap-3 px-5 py-3">
+          <h1 className="text-lg font-semibold text-gray-900">Editor Visual</h1>
+          <div className="flex items-center gap-1.5 ml-2">
+            {PREVIEW_PAGES.map((p) => {
+              const isActive = previewPage === p.path || p.children?.some(c => c.path === previewPage)
+              return (
+                <button
+                  key={p.path}
+                  onClick={() => {
+                    setPreviewPage(p.path)
+                    setSelected(null)
+                  }}
+                  className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+                    isActive
+                      ? "bg-emerald-700 text-white border-emerald-700"
+                      : "border-gray-200 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {p.label}
+                </button>
+              )
+            })}
+          </div>
+          <div className="ml-auto flex items-center gap-3">
+            {saved && <span className="text-sm text-emerald-600">✓ Tersimpan</span>}
             <button
-              key={p.path}
               onClick={() => {
-                setPreviewPage(p.path)
+                setShowFull(true)
                 setSelected(null)
               }}
-              className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
-                previewPage === p.path
-                  ? "bg-emerald-700 text-white border-emerald-700"
-                  : "border-gray-200 text-gray-600 hover:bg-gray-50"
-              }`}
+              className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg border border-gray-200"
             >
-              {p.label}
+              Edit Lengkap
             </button>
-          ))}
+            <Btn onClick={submit} disabled={saving}>{saving ? "Menyimpan..." : "Simpan"}</Btn>
+          </div>
         </div>
-        <div className="ml-auto flex items-center gap-3">
-          {saved && <span className="text-sm text-emerald-600">✓ Tersimpan</span>}
-          <button
-            onClick={() => {
-              setShowFull(true)
-              setSelected(null)
-            }}
-            className="text-sm text-gray-600 hover:text-gray-900 px-3 py-1.5 rounded-lg border border-gray-200"
-          >
-            Edit Lengkap
-          </button>
-          <Btn onClick={submit} disabled={saving}>{saving ? "Menyimpan..." : "Simpan"}</Btn>
-        </div>
+        {/* Sub-tab halaman aktif */}
+        {PREVIEW_PAGES.find(p => p.children?.some(c => c.path === previewPage) || (p.path === previewPage && p.children))?.children && (
+          <div className="flex items-center gap-1 px-5 pb-2">
+            {PREVIEW_PAGES.find(p => p.children?.some(c => c.path === previewPage) || (p.path === previewPage && p.children))!.children!.map(c => (
+              <button
+                key={c.path}
+                onClick={() => { setPreviewPage(c.path); setSelected(null) }}
+                className={`px-3 py-1 text-xs rounded border transition-colors ${
+                  previewPage === c.path
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-300 font-medium"
+                    : "border-gray-200 text-gray-500 hover:bg-gray-50"
+                }`}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="flex-1 relative overflow-hidden">
